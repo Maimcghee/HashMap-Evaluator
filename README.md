@@ -1,32 +1,47 @@
-Project #3: Hash Map Varients 
+# HashMap Collision Strategy Benchmark
 
-This project compares three custom HashMap implementations in Java:
-    -HashMapLinear – Linear probing (open addressing)
-    -HashMapLL – Separate chaining using linked lists
-    -HashMapArrayList – Separate chaining using ArrayLists
+A comparison of three custom HashMap implementations in Java, each handling collisions differently, benchmarked on insertion time and memory usage.
 
-Each implementation supports the basic HashMap operations:
-    -put(K key, V value)
-    -get(K key)
-    -remove(K key)
-    -automatic resizing (grow())
-    - HashIt(HashMapEvaluator.Pair[] dataSet)
-        - takes a data set of type Pair and hashes them into the respected hashmap then returns the finished hashmap 
+## Implementations
 
-HashMapEvaluator class(driver class):
-    - A randomly generated dataset is hashed into each map, and performance (insertion time and memory usage) is recorded to compare the three collision-handling strategies
-    - contains Pair class used to generate random KV pairs 
+| Class | Collision strategy |
+|---|---|
+| `HashMapLinear` | Open addressing with linear probing |
+| `HashMapLL` | Separate chaining with linked lists |
+| `HashMapArrayList` | Separate chaining with ArrayLists |
 
-Based on the collected data:
-    Time:
-        - Fastest retrieval: HashMapLL (linked list chaining)
-        - Medium retrieval: HashMapArrayList
-        - Slowest retrieval: HashMapLinear due to clustering in linear probing
-    Memory:
-        - Lowest consumption: HashMapLinear
-        - Medium consumption: HashMapLL
-        - Highest consumption: HashMapArrayList
+`HashMap.java` defines the shared interface all three implement.
 
-How To Run Program:
-    1. javac *.java
-    2. java HashMapEvaluator <Size of data sets > <number of tests (repetitions)> >results.csv
+Each implementation supports:
+- `put(K key, V value)`
+- `get(K key)`
+- `remove(K key)`
+- Automatic resizing via `grow()`
+- `hashIt(Pair[] dataSet)`: hashes a full dataset into the map and returns it
+
+## How the benchmark works
+
+`HashMapEvaluator` is the driver class. It generates a random dataset of key-value pairs (using its `Pair` class), hashes the same data into each implementation, and records insertion time and memory usage across repeated runs.
+
+## Results
+
+**Speed (fastest → slowest)**
+1. `HashMapLL`: linked-list chaining
+2. `HashMapArrayList`
+3. `HashMapLinear`: slowed by clustering, where filled slots bunch together and probing takes longer
+
+**Memory (lowest → highest)**
+1. `HashMapLinear`: no extra node or list objects
+2. `HashMapLL`
+3. `HashMapArrayList`
+
+**Takeaway:** linear probing uses the least memory but slows down as clusters form. Chaining is faster but costs more memory. That's the classic speed-vs-memory trade-off.
+
+Raw data is in `results.csv`, and charts are in the PDF.
+
+## How to run
+
+```bash
+javac *.java
+java HashMapEvaluator <number_of_repetitions> > results.csv
+```
